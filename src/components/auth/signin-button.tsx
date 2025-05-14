@@ -1,14 +1,9 @@
-import { signIn } from "@/auth";
+import { signInToGoogleAction } from "../actions/sign-in";
 import { Button } from "../ui/button";
 
 export function SignIn() {
 	return (
-		<form
-			action={async () => {
-				"use server";
-				await signIn("google", { redirectTo: "/pricing" });
-			}}
-		>
+		<form action={signInToGoogleAction}>
 			<Button variant="outline" className="w-full" data-provider="google">
 				<svg
 					width="256"
