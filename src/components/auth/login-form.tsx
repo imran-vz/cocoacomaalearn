@@ -19,8 +19,8 @@ import {
 	FormMessage,
 } from "../ui/form";
 import { SignIn } from "./signin-button";
-import { signIn } from "@/auth";
-import { signInWithCredentials } from "../actions/sign-up";
+import { signInWithCredentials } from "../actions/sign-in";
+import { useRouter } from "next/navigation";
 
 const passwordRegex =
 	/^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -53,6 +53,7 @@ export function LoginForm({
 	className,
 	...props
 }: React.ComponentPropsWithoutRef<"div">) {
+	const router = useRouter();
 	const [fieldType, setFieldType] = useState<"text" | "password">("password");
 	const form = useForm<z.infer<typeof loginSchema>>({
 		resolver: zodResolver(loginSchema),
@@ -63,15 +64,17 @@ export function LoginForm({
 	});
 
 	const onSubmit = async (data: z.infer<typeof loginSchema>) => {
-		console.log(data);
 		const formData = new FormData();
 		formData.append("email", data.email);
 		formData.append("password", data.password);
 		try {
 			const result = await signInWithCredentials(formData);
-			if (result?.error) {
-				console.error(result.error);
+			if (result) {
+				console.error(result);
+				return;
 			}
+
+			router.push("/pricing");
 		} catch (error) {
 			console.error(error);
 		}

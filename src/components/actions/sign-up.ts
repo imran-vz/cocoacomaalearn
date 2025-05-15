@@ -1,22 +1,28 @@
 "use server";
 
-import { signIn } from "@/auth";
+import { db } from "@/db";
+import { usersTable } from "@/db/schema";
+import { hash, genSalt } from "bcrypt";
+const saltRounds = 10;
 
-export async function signInWithCredentials(formData: FormData) {
-	const email = formData.get("email");
-	const password = formData.get("password");
+export async function signUp(formData: FormData) {
+	const email = formData.get("email") as string;
+	const password = formData.get("password") as string;
+	const name = formData.get("name") as string;
 
-	if (!email || !password) {
-		return { error: "Email and password are required" };
+	if (!email || !password || !name) {
+		return { error: "Email, password and name are required" };
 	}
+
 	try {
-		await signIn("credentials", {
-			email,
-			password,
-			redirectTo: "/pricing",
+		const salt = await genSalt(saltRounds);
+		const hashedPassword = await hash(password, salt);
+		await db.insert(usersTable).values({
+			email: email.toLowerCase(),
+			password: hashedPassword,
+			name,
 		});
 	} catch (error) {
 		console.error(error);
-		return { error: "Invalid email or password" };
 	}
 }
