@@ -1,4 +1,4 @@
-import { signInToGoogleAction } from "../actions/sign-in";
+import { signInToGoogleAction } from "../../actions/sign-in";
 import { Button } from "../ui/button";
 
 export function SignIn() {

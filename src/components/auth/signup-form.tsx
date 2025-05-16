@@ -9,7 +9,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { signUp } from "../actions/sign-up";
+import { signUp } from "../../actions/sign-up";
 import {
 	Form,
 	FormControl,

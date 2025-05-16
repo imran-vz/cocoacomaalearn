@@ -19,8 +19,9 @@ import {
 	FormMessage,
 } from "../ui/form";
 import { SignIn } from "./signin-button";
-import { signInWithCredentials } from "../actions/sign-in";
+import { signInWithCredentials } from "../../actions/sign-in";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const passwordRegex =
 	/^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -71,6 +72,7 @@ export function LoginForm({
 			const result = await signInWithCredentials(formData);
 			if (result) {
 				console.error(result);
+				toast.error(result);
 				return;
 			}
 
