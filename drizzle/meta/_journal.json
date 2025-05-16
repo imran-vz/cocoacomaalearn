@@ -15,6 +15,13 @@
       "when": 1747219502068,
       "tag": "0001_narrow_chamber",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1747390916183,
+      "tag": "0002_ambitious_nightshade",
+      "breakpoints": true
     }
   ]
 }
