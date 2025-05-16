@@ -9,7 +9,7 @@ import {
 	varchar,
 } from "drizzle-orm/pg-core";
 
-export const usersTable = pgTable("users", {
+export const users = pgTable("users", {
 	id: cuid2("id").defaultRandom().primaryKey(),
 	name: varchar({ length: 255 }),
 	phone: varchar({ length: 255 }),
@@ -23,18 +23,19 @@ export const usersTable = pgTable("users", {
 	role: varchar({ length: 255, enum: ["user", "admin"] })
 		.notNull()
 		.default("user"),
+	token: varchar({ length: 255 }),
 	isDeleted: boolean().notNull().default(false),
 });
 
-export const purchaseTable = pgTable("purchases", {
+export const purchases = pgTable("purchases", {
 	id: integer().primaryKey().generatedAlwaysAsIdentity(),
-	userId: varchar().references(() => usersTable.id),
-	productId: integer().references(() => productsTable.id),
+	userId: varchar().references(() => users.id),
+	productId: integer().references(() => products.id),
 	createdAt: timestamp().notNull().defaultNow(),
 	updatedAt: timestamp().notNull().defaultNow(),
 });
 
-export const productsTable = pgTable("products", {
+export const products = pgTable("products", {
 	id: integer().primaryKey().generatedAlwaysAsIdentity(),
 	name: varchar({ length: 255 }).notNull(),
 	description: varchar({ length: 512 }),
@@ -43,13 +44,13 @@ export const productsTable = pgTable("products", {
 	updatedAt: timestamp().notNull().defaultNow(),
 });
 
-export const productPurchaseRelation = relations(productsTable, ({ many }) => ({
-	purchases: many(purchaseTable),
+export const productPurchaseRelation = relations(products, ({ many }) => ({
+	purchases: many(purchases),
 }));
 
-export const purchaseUserRelation = relations(purchaseTable, ({ one }) => ({
-	user: one(usersTable, {
-		fields: [purchaseTable.userId],
-		references: [usersTable.id],
+export const purchaseUserRelation = relations(purchases, ({ one }) => ({
+	user: one(users, {
+		fields: [purchases.userId],
+		references: [users.id],
 	}),
 }));

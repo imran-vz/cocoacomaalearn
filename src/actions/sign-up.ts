@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { usersTable } from "@/db/schema";
+import { users } from "@/db/schema";
 import { hash, genSalt } from "bcrypt";
 const saltRounds = 10;
 
@@ -17,7 +17,7 @@ export async function signUp(formData: FormData) {
 	try {
 		const salt = await genSalt(saltRounds);
 		const hashedPassword = await hash(password, salt);
-		await db.insert(usersTable).values({
+		await db.insert(users).values({
 			email: email.toLowerCase(),
 			password: hashedPassword,
 			name,
