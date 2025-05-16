@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import type { NextAuthConfig } from "next-auth";
+import { getUserByEmail } from "./db/modules/users";
 
 export const authConfig = {
 	pages: {
@@ -11,11 +12,7 @@ export const authConfig = {
 	callbacks: {
 		signIn: async ({ profile, account }) => {
 			if (profile?.email_verified && profile.email) {
-				const [user] = await db
-					.select()
-					.from(users)
-					.where(eq(users.email, profile.email))
-					.limit(1);
+				const user = await getUserByEmail(profile.email);
 
 				if (!user) {
 					await db.insert(users).values({

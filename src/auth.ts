@@ -43,11 +43,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 					return null;
 				}
 
+				let is_onboarded = true;
+
+				if (!user.phone) {
+					is_onboarded = false;
+				}
+				if (!user.name) {
+					is_onboarded = false;
+				}
+
 				return {
 					email: user.email,
 					name: user.name,
 					id: user.id,
 					image: user.profilePicture,
+					is_onboarded: is_onboarded,
 				};
 			},
 		}),
