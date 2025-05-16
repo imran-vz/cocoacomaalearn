@@ -12,7 +12,7 @@ export async function signInWithCredentials(formData: FormData) {
 	const password = formData.get("password");
 
 	if (!email || !password) {
-		return { error: "Email and password are required" };
+		return "Email and password are required";
 	}
 	try {
 		await signIn("credentials", { email, password, redirect: false });
