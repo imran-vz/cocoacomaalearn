@@ -13,7 +13,7 @@ export function UserDropDown({ session }: { session: Session }) {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger>
-				<Avatar className="w-10 h-10">
+				<Avatar className="w-10 h-10" key={session.user?.image}>
 					<AvatarImage
 						src={session.user?.image || ""}
 						loading="eager"

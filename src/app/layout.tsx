@@ -8,7 +8,6 @@ import { Navbar } from "@/components/navbar";
 
 import "./globals.css";
 import { Onboarding } from "@/components/onboarding";
-import { checkOnboarding } from "@/actions/check-onboarding";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,18 +22,13 @@ export default async function RootLayout({
 	children: React.ReactNode;
 }) {
 	const session = await auth();
-	let isOnboarded = false;
-
-	if (session?.user?.email) {
-		isOnboarded = await checkOnboarding(session.user.email);
-	}
 
 	return (
 		<html lang="en">
 			<body className={inter.className}>
 				<Toaster richColors position="top-center" />
 				<Navbar />
-				{session && isOnboarded === false ? (
+				{session && session.user.onboarded === false ? (
 					<main>
 						<Onboarding />
 					</main>

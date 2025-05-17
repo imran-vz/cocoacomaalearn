@@ -12,7 +12,9 @@ export async function Navbar() {
 					<h1 className="font-bold text-2xl text-primary">Cocoa Comaa</h1>
 				</Link>
 
-				{session ? <UserDropDown session={session} /> : null}
+				{session ? (
+					<UserDropDown session={session} key={session.user?.image} />
+				) : null}
 			</div>
 		</header>
 	);
