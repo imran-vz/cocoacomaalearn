@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, EyeOff, GalleryVerticalEnd } from "lucide-react";
+import { Eye, EyeOff, GalleryVerticalEnd, Loader2 } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -55,6 +55,7 @@ export function LoginForm({
 	...props
 }: React.ComponentPropsWithoutRef<"div">) {
 	const router = useRouter();
+	const [isLoading, setIsLoading] = useState(false);
 	const [fieldType, setFieldType] = useState<"text" | "password">("password");
 	const form = useForm<z.infer<typeof loginSchema>>({
 		resolver: zodResolver(loginSchema),
@@ -65,6 +66,7 @@ export function LoginForm({
 	});
 
 	const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+		setIsLoading(true);
 		const formData = new FormData();
 		formData.append("email", data.email);
 		formData.append("password", data.password);
@@ -79,6 +81,8 @@ export function LoginForm({
 			router.push("/pricing");
 		} catch (error) {
 			console.error(error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -159,8 +163,12 @@ export function LoginForm({
 								)}
 							/>
 
-							<Button type="submit" className="w-full">
-								Login
+							<Button type="submit" className="w-full" disabled={isLoading}>
+								{isLoading ? (
+									<Loader2 className="size-4 animate-spin" />
+								) : (
+									"Login"
+								)}
 							</Button>
 						</div>
 						<div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
