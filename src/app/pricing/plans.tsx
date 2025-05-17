@@ -3,9 +3,91 @@
 import usePlanStore from "@/store/plan";
 import PricingToggle from "./pricing-toggle";
 import FeatureItem from "./feature-item";
+import type { Session } from "next-auth";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
-export default function Plans() {
+export default function Plans({ session }: { session: Session }) {
 	const plan = usePlanStore((state) => state.plan);
+
+	const createOrderId = async () => {
+		try {
+			const response = await fetch("/api/order", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					amount: (100 * 100).toString(),
+					currency: "INR",
+				}),
+			});
+
+			console.log(" :24 | createOrderId | response:", response);
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
+
+			const data = await response.json();
+			return data.orderId;
+		} catch (error) {
+			console.error("There was a problem with your fetch operation:", error);
+		}
+	};
+
+	const processPayment = async () => {
+		try {
+			const orderId: string = await createOrderId();
+			const options = {
+				key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+				amount: 100 * 100,
+				currency: "INR",
+				name: "Cocoa Comaa",
+				description: "Payment for the course",
+				order_id: orderId,
+				handler: async (response: {
+					razorpay_payment_id: string;
+					razorpay_order_id: string;
+					razorpay_signature: string;
+				}) => {
+					const data = {
+						orderCreationId: orderId,
+						razorpayPaymentId: response.razorpay_payment_id,
+						razorpayOrderId: response.razorpay_order_id,
+						razorpaySignature: response.razorpay_signature,
+					};
+
+					const result = await fetch("/api/verify", {
+						method: "POST",
+						body: JSON.stringify(data),
+						headers: { "Content-Type": "application/json" },
+					});
+					const res = await result.json();
+					if (res.isOk) {
+						toast.success("payment succeed");
+					} else {
+						toast.info(res.message);
+					}
+				},
+				prefill: {
+					name: session.user.name,
+					email: session.user.email,
+				},
+				theme: { color: "#804134" },
+			};
+			// @ts-ignore
+			const paymentObject = new window.Razorpay(options);
+			paymentObject.on(
+				"payment.failed",
+				(response: { error: { description: string } }) => {
+					toast.error(response.error.description);
+				},
+			);
+			paymentObject.open();
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	return (
 		<div className="container mx-auto px-4 py-6 max-w-4xl">
@@ -74,6 +156,10 @@ export default function Plans() {
 						Monthly Subscription Options:
 					</h3>
 					{/* Subscription options would go here */}
+				</div>
+
+				<div className="flex justify-center">
+					<Button onClick={processPayment}>Pay Now</Button>
 				</div>
 			</div>
 		</div>
