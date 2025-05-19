@@ -8,9 +8,9 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SignOutButton } from "./auth/signout-button";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Image from "next/image";
+import { SignOutButton } from "./auth/signout-button";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 
 export function UserDropDown({ session }: { session: Session }) {
 	return (
