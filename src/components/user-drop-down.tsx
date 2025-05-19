@@ -1,6 +1,7 @@
 "use client";
 
 import type { Session } from "next-auth";
+import Image from "next/image";
 
 import {
 	DropdownMenu,
@@ -8,7 +9,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Image from "next/image";
 import { SignOutButton } from "./auth/signout-button";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 
